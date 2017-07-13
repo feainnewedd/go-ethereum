@@ -179,6 +179,8 @@ func (pm *ProtocolManager) synchronise(peer *peer) {
 	mode := downloader.FullSync
 	if atomic.LoadUint32(&pm.fastSync) == 1 {
 		mode = downloader.FastSync
+	} else if currentBlock.NumberU64() == 0 && pm.blockchain.CurrentFastBlock().NumberU64() > 0 {
+		mode = downloader.FastSync
 	}
 	if !pm.downloader.Synchronise(peer.id, pHead, pTd, mode) {
 		return
